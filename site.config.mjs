@@ -11,9 +11,9 @@ if (!hasSiteUrl && process.env.NODE_ENV === 'production') {
 
 export const site = {
   url: hasSiteUrl ? siteUrl : fallbackSiteUrl,
-  title: 'Astro Themes by Whono',
-  brandTitle: 'Whono',
-  author: 'Whono',
+  title: ' Attempting a kind of Eternity',
+  brandTitle: '尝试一种永恒',
+  author: 'Blueberryy_095',
   authorAvatar: 'author/avatar.webp',
   description: '一个 Astro 主题的展示站：轻量、可维护、可复用。'
 };

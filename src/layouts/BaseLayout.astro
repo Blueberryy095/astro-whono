@@ -23,7 +23,7 @@ const canonical = (hasSiteUrl && Astro.site)
 const ogImage = image
   ? ((hasSiteUrl && Astro.site) ? new URL(image, Astro.site).toString() : image)
   : null;
-const startYear = 2025;
+const startYear = 2026;
 const currentYear = new Date().getFullYear();
 const yearRange = currentYear > startYear ? `${startYear}-${currentYear}` : `${startYear}`;
 const base = import.meta.env.BASE_URL ?? '/';
@@ -71,7 +71,7 @@ const withBase = createWithBase(base);
       <main id="content" class="content" tabindex="-1">
         <div class="content__inner">
           <slot />
-          <footer class="site-footer">© {yearRange} Whono · Theme Demo · by cxro</footer>
+          <footer class="site-footer">© {yearRange} Blueberryy_095 · Blog · Theme by cxro</footer>
         </div>
       </main>
     </div>

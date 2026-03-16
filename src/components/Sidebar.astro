@@ -2,7 +2,7 @@
 import Icon from './Icon.astro';
 import { createWithBase } from '../utils/format';
 
-const { siteTitle = 'Whono' } = Astro.props;
+const { siteTitle = '尝试一种永恒' } = Astro.props;
 
 const pathname = Astro.url.pathname;
 const base = import.meta.env.BASE_URL ?? '/';
@@ -11,19 +11,19 @@ const homeHref = withBase('/');
 
 const nav = [
   { label: '随笔', href: withBase('/essay/') },
-  { label: '絮语', href: withBase('/bits/') },
-  { label: '小记', href: withBase('/memo/') },
+ // { label: '絮语', href: withBase('/bits/') },
+ // { label: '小记', href: withBase('/memo/') },
   { label: '归档', href: withBase('/archive/') },
   { label: '关于', href: withBase('/about/') }
 ];
 
-const quote = 'A minimal Astro theme\nfor essays, notes, and docs.\nDesigned for reading,\nopen-source.';
+const quote = '学生｜徐徐图之\n人生居天壤间，\n忽如飞鸟栖孤枝。\n我今隐约欲何为？';
 ---
 
 <aside class="sidebar">
   <a class="sidebar__title" href={homeHref} aria-label={`${siteTitle} 首页`}>{siteTitle}</a>
 
-  <div class="sidebar__quote">
+  <div class="sidebar__quote" style="font-style: normal;">
     {quote.split('\n').map((line) => (
       <>
         {line}<br />
