@@ -61,7 +61,7 @@ const nextHref = currentPage < totalPages ? withBase(`/archive/page/${currentPag
       <div class="archive-list">
         {g.list.map((entry) => {
           const slug = getEssaySlug(entry);
-          const href = withBase(`/archive/${slug}/`);
+          const href = withBase(`/${entry.collection}/${slug}/`);
           const tag = entry.data.tags?.[0];
           return (
           <div class="archive-row" data-entry-item data-slug={slug}>

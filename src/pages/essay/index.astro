@@ -52,7 +52,7 @@ const nextHref = currentPage < totalPages ? withBase(`/essay/page/${currentPage 
   <div class="list">
     {pageEssays.map((e) => (
       <EssayCard
-        href={withBase(`/archive/${getEssaySlug(e)}/`)}
+        href={withBase(`/essay/${getEssaySlug(e)}/`)}
         slug={getEssaySlug(e)}
         title={e.data.title}
         excerpt={getListExcerpt(e)}
