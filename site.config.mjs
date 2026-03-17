@@ -15,7 +15,7 @@ export const site = {
   brandTitle: '尝试一种永恒',
   author: 'Blueberryy_095',
   authorAvatar: 'author/avatar.webp',
-  description: '一个 Astro 主题的展示站：轻量、可维护、可复用。'
+  description: '一个建设中的个人博客'
 };
 
 export const PAGE_SIZE_ARCHIVE = 12;
