@@ -57,7 +57,8 @@ const nextHref = currentPage < totalPages ? withBase(`/essay/page/${currentPage 
         title={e.data.title}
         excerpt={getListExcerpt(e)}
         date={e.data.date}
-        tag={e.data.tags?.[0]}
+        tags={e.data.tags}   {/* 👈 第一重保险：传送完整的标签数组 */}
+        tag={e.data.tag}     {/* 👈 第二重保险：传送旧版的单数标签 */}
         badge={e.data.badge}
       />
     ))}

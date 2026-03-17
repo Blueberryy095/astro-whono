@@ -6,12 +6,17 @@ const {
   title,
   excerpt,
   date,
-  tag,
+  tag,   // 兜底暗号：如果发的是单数，接住它！
+  tags,  // 升级暗号：如果发的是一整盒，也接住它！
   badge = '随笔',
   slug = ''
 } = Astro.props;
 
 const displayBadge = badge?.trim() ? badge : '随笔';
+
+// 🧠 终极智能处理器：不管发来的是什么，全部转换成标准数组格式
+const rawData = tags || tag;
+const finalTags = Array.isArray(rawData) ? rawData : (rawData ? [rawData] : []);
 ---
 
 <a class="list-item list-item--link" href={href} data-entry-item data-slug={slug || undefined}>
@@ -24,6 +29,8 @@ const displayBadge = badge?.trim() ? badge : '随笔';
   {excerpt ? <p class="list-item__excerpt">{excerpt}</p> : null}
   <div class="meta-line">
     发布于：{formatISODate(date)}
-    {tag ? <> · <span class="tag">#{tag}</span></> : null}
+    {finalTags.length > 0 ? (
+      <> · {finalTags.map((t) => <span class="tag" style="margin-right: 6px;">#{t}</span>)}</>
+    ) : null}
   </div>
 </a>

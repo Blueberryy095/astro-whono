@@ -1,14 +1,13 @@
 ---
-title: 写作是一种思考方式
-description: 关于写作意义的一些思考
-date: 2026-01-12
-tags: ["写作", "思考"]
-draft: True
+title: Testing
+description: 测试用，all for testing
+date: 2026-03-15
+tags: ["生活"]
+draft: true
+archive: false
 ---
 
-很多时候，我们以为自己知道一件事，直到试图把它写下来。
-
-写作逼迫你把模糊的想法变成清晰的句子。你无法在纸上含糊其辞——每一个词都需要被选择，每一个观点都需要被论证。这个过程本身就是最好的思考训练。
+测试。
 
 > 我写作是为了发现自己在想什么。 —— Joan Didion
 

@@ -70,12 +70,13 @@ const pageTitle = `随笔 · 第 ${currentPage} 页`;
   <div class="list">
     {pageEssays.map((e) => (
       <EssayCard
-        href={withBase(`/archive/${getEssaySlug(e)}/`)}
+        href={withBase(`/essay/${getEssaySlug(e)}/`)}
         slug={getEssaySlug(e)}
         title={e.data.title}
         excerpt={getListExcerpt(e)}
         date={e.data.date}
-        tag={e.data.tags?.[0]}
+        tags={e.data.tags}   {/* 👈 这里换成复数！ */}
+        tag={e.data.tag}     {/* 👈 兜底保险！ */}
         badge={e.data.badge}
       />
     ))}

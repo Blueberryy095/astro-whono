@@ -3,8 +3,8 @@ title: 从左到右12345
 description: "搬运旧随笔中"
 date: 2024-06-11
 tags: ["日常"]
-archive: True
-draft: False　
+archive: true
+draft: false
 ---
 <figure class="figure">
   <img src="/images/essay/2024/20240611.webp" alt="My flowers in Nottingham" />

@@ -62,7 +62,7 @@ const nextHref = currentPage < totalPages ? withBase(`/archive/page/${currentPag
         {g.list.map((entry) => {
           const slug = getEssaySlug(entry);
           const href = withBase(`/${entry.collection}/${slug}/`);
-          const tag = entry.data.tags?.[0];
+          
           return (
           <div class="archive-row" data-entry-item data-slug={slug}>
             <div class="archive-title">
@@ -73,12 +73,18 @@ const nextHref = currentPage < totalPages ? withBase(`/archive/page/${currentPag
                 <span class="archive-date-md">{formatMonthDay(entry.data.date)}</span>
                 <span class="archive-date-full">{formatISODate(entry.data.date)}</span>
               </div>
-              {tag ? (
-                <div class="archive-tag">#{tag}</div>
+              
+              {entry.data.tags && entry.data.tags.length > 0 ? (
+                <div style="display: flex; gap: 8px;">
+                  {entry.data.tags.map((t) => (
+                    <div class="archive-tag">#{t}</div>
+                  ))}
+                </div>
               ) : null}
+              
             </div>
           </div>
-        );
+          );
         })}
       </div>
     </section>

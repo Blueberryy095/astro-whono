@@ -14,7 +14,6 @@ const {
 } = Astro.props;
 
 const tags = entry?.data?.tags ?? [];
-const firstTag = tags[0];
 const defaultImage = '/og.svg';
 const coverImage = entry?.data?.cover ?? null;
 const ogImage = coverImage ?? defaultImage;
@@ -51,7 +50,7 @@ const description = getMetaDescription(entry);
     <div class="meta-line">
       发布于：{formatISODate(entry.data.date)}
       {typeLabel ? <> · <span class="tag">{typeLabel}</span></> : null}
-      {firstTag ? <> · <span class="tag">#{firstTag}</span></> : null}
+      {tags && tags.length > 0 ? <> · {tags.map((tag) => <span class="tag" style="margin-right: 6px;">#{tag}</span>)}</> : null}
     </div>
   </div>
 

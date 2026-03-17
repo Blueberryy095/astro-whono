@@ -3,8 +3,8 @@ title: 2023年终总结
 description: "搬运旧随笔中"
 date: 2023-12-31
 tags: ["日常"]
-archive: True
-draft: False　
+archive: true
+draft: false
 ---
 前两天跟阿邱聊天，我们都说羡慕那种能在puq洋洋洒洒写一大堆年终总结的人。阿邱暂且不论，我确是狗嘴吐不出象牙的那种人。但既然大家都发了，她也说睡醒了想看，那我就尽量拉扯一下我的狗牙好了。
 

@@ -4,7 +4,8 @@ description: 展示所有 Markdown 格式效果，包括标题、列表、代码
 date: 2026-01-15
 badge: 示例
 tags: ["指南", "Markdown", "排版"]
-draft: True
+draft: true
+archive: false
 ---
 
 这篇文章展示了本主题支持的所有 Markdown 排版效果。

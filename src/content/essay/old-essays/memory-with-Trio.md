@@ -3,8 +3,8 @@ title: Memory with Trio
 description: "搬运旧随笔中"
 date: 2024-04-10
 tags: ["日常"]
-archive: True
-draft: False　
+archive: true
+draft: false
 ---
 好想喝trio啊🥺🥺🥺最想宁波的一集🥺🥺
 
