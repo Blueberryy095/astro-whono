@@ -1,0 +1,79 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import EssayCard from '../../components/EssayCard.astro';
+// 👇 关键：引入你原生的函数
+import { createWithBase, getEssaySlug } from '../../lib/content';
+
+const base = import.meta.env.BASE_URL ?? '/';
+const withBase = createWithBase(base);
+
+const allSeriesPosts = await getCollection('series', ({ data }) => {
+  return data.draft !== true;
+});
+
+const sortedPosts = allSeriesPosts.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+const allTopics = [...new Set(sortedPosts.map((post) => post.data.topic))];
+---
+
+<BaseLayout title="连载" bodyClass="series-page">
+  <div class="page-header page-header--essay">
+    <div class="page-heading" style="display: flex; align-items: baseline; gap: 0.75rem;">
+      <h1 class="page-title" style="margin: 0;">连载</h1>
+      <span class="page-subtitle">专栏与连载，共 {sortedPosts.length} 篇 · <a href={withBase('/series/rss.xml')}>RSS</a></span>
+    </div>
+  </div>
+
+  <div class="topic-filters" style="margin-top: 1.5rem; margin-bottom: 0.5rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+    <button class="topic-btn active" data-topic="all" style="cursor: pointer; background: none; border: none; font-family: inherit; font-size: 0.9em; padding-bottom: 2px; border-bottom: 1px solid currentColor; opacity: 1;">全部</button>
+    {allTopics.map((topic) => (
+      <button class="topic-btn" data-topic={topic} style="cursor: pointer; background: none; border: none; font-family: inherit; font-size: 0.9em; padding-bottom: 2px; border-bottom: 1px solid transparent; opacity: 0.6; transition: all 0.2s;"># {topic}</button>
+    ))}
+  </div>
+
+  <div class="list series-list">
+    {sortedPosts.map((post) => {
+      // 👇 绝杀：统一用你的原生函数获取门牌号
+      const itemSlug = getEssaySlug(post); 
+      return (
+        <div class="series-item" data-topic={post.data.topic}>
+          <EssayCard
+            href={withBase(`/series/${itemSlug}/`)}
+            slug={itemSlug}
+            title={post.data.title}
+            excerpt={post.body ? post.body.slice(0, 120) + '...' : ''}
+            date={post.data.date}
+            tags={[post.data.topic]}
+            badge="连载"
+          />
+        </div>
+      );
+    })}
+  </div>
+
+  <script>
+    const buttons = document.querySelectorAll('.topic-btn');
+    const items = document.querySelectorAll('.series-item');
+
+    buttons.forEach(button => {
+      button.addEventListener('click', () => {
+        buttons.forEach(btn => {
+          (btn as HTMLElement).style.opacity = '0.6';
+          (btn as HTMLElement).style.borderBottomColor = 'transparent';
+        });
+        (button as HTMLElement).style.opacity = '1';
+        (button as HTMLElement).style.borderBottomColor = 'currentColor';
+
+        const selectedTopic = button.getAttribute('data-topic');
+
+        items.forEach(item => {
+          if (selectedTopic === 'all' || item.getAttribute('data-topic') === selectedTopic) {
+            (item as HTMLElement).style.display = 'block';
+          } else {
+            (item as HTMLElement).style.display = 'none';
+          }
+        });
+      });
+    });
+  </script>
+</BaseLayout>

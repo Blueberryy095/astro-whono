@@ -19,6 +19,9 @@ const coverImage = entry?.data?.cover ?? null;
 const ogImage = coverImage ?? defaultImage;
 const description = getMetaDescription(entry);
 
+// 核心逻辑：获取当前文章的密码
+const expectedPassword = entry?.data?.password;
+const isLocked = !!expectedPassword;
 ---
 
 <BaseLayout
@@ -54,9 +57,30 @@ const description = getMetaDescription(entry);
     </div>
   </div>
 
-  <div class="prose">
-    <Content />
-  </div>
+  {/* 👇 极简密码门结构开始 👇 */}
+  {isLocked ? (
+    <div class="password-protect-container" id="lock-screen">
+      {/* 🔒  emoji 已移除 */}
+      <div class="lock-inner">
+        <p class="lock-text">这是一篇私密内容，需输入密码阅读</p>
+        <div class="password-input-group">
+          <input type="password" id="post-password" placeholder="请输入密码..." />
+          <button id="unlock-btn">解 锁</button>
+        </div>
+        <p id="password-error" style="color: #e53e3e; display: none; font-size: 0.85em; margin-top: 10px; position: absolute; bottom: 10px;">密码错误,请重试</p>
+      </div>
+    </div>
+    
+    <div class="prose" id="secret-content" style="display: none;" data-password={expectedPassword}>
+      <Content />
+    </div>
+  ) : (
+    <div class="prose">
+      <Content />
+    </div>
+  )}
+  {/* 👆 极简密码门结构结束 👆 */}
+
   {(prev || next) ? (
     <nav class="prev-next" aria-label="上一篇/下一篇">
       <div class="prev-next__item">
@@ -100,5 +124,130 @@ const description = getMetaDescription(entry);
       enablePan: false,
       enableSwipeDownClose: false
     });
+
+    // 处理解锁逻辑的 JS (保持不变，功能稳定)
+    const unlockBtn = document.getElementById('unlock-btn');
+    const passwordInput = document.getElementById('post-password') as HTMLInputElement;
+    const lockScreen = document.getElementById('lock-screen');
+    const secretContent = document.getElementById('secret-content');
+    const errorMsg = document.getElementById('password-error');
+
+    if (unlockBtn && passwordInput && secretContent && lockScreen) {
+      const expectedPassword = secretContent.getAttribute('data-password');
+      const pageKey = `unlocked-${window.location.pathname}`;
+
+      // 验证密码的函数
+      const verifyPassword = () => {
+        if (passwordInput.value === expectedPassword) {
+          lockScreen.style.display = 'none';
+          secretContent.style.display = 'block';
+          sessionStorage.setItem(pageKey, 'true'); // 记住登录状态
+        } else {
+          if (errorMsg) errorMsg.style.display = 'block';
+          passwordInput.value = '';
+          passwordInput.focus(); // 聚焦回输入框
+        }
+      };
+
+      // 点击按钮解锁
+      unlockBtn.addEventListener('click', verifyPassword);
+      // 回车键解锁
+      passwordInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') verifyPassword();
+      });
+
+      // 页面加载时检查是否已经解锁过
+      if (sessionStorage.getItem(pageKey) === 'true') {
+        lockScreen.style.display = 'none';
+        secretContent.style.display = 'block';
+      }
+    }
   </script>
+
+  {/* 👇 船新的极简扁平化样式 👇 */}
+  <style>
+    .password-protect-container {
+      position: relative;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 1.5rem 1rem; /* 👈 大幅缩小垂直 Padding，扁平化 */
+      background: var(--bg-secondary, rgba(0,0,0,0.025));
+      border: 1px solid var(--border-color, rgba(0,0,0,0.08)); /* 👈 加一个极淡的边框，显得更有质感 */
+      border-radius: 10px;
+      margin: 3rem auto;
+      max-width: 600px; /* 👈 限制最大宽度，不要铺满整个正文区 */
+    }
+    
+    .lock-inner {
+        width: 100%;
+        max-width: 400px;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .lock-text {
+      margin-top: 0;
+      margin-bottom: 1.25rem; /* 👈 缩小间距 */
+      color: var(--text-secondary, #666);
+      font-size: 0.95rem; /* 👈 字体稍微缩小一点，更精致 */
+    }
+    
+    .password-input-group {
+      display: flex;
+      width: 100%;
+      gap: 10px; /* 👈 增加一点输入框和按钮的间距 */
+    }
+    
+    .password-input-group input {
+      flex: 1;
+      padding: 10px 14px;
+      border: 1px solid var(--border-color, #ccc);
+      border-radius: 6px;
+      font-size: 1rem;
+      outline: none;
+      font-family: inherit; /* 👈 确保继承网站主字体 */
+      background: var(--bg-primary, #fff);
+      color: var(--text-primary, #333);
+      transition: all 0.2s;
+    }
+    
+    .password-input-group input:focus {
+      border-color: #999; /* 👈 focus时边框加深点 */
+    }
+    
+    .password-input-group button {
+      padding: 10px 24px; /* 👈 拉宽按钮 */
+      background: var(--text-primary, #333);
+      color: var(--bg-primary, #fff);
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.95rem; /* 👈 按钮字体稍微缩小点 */
+      font-weight: 500;
+      font-family: inherit; /* 👈 终极修复：强制继承字体，不会变奇怪了 */
+      transition: opacity 0.2s;
+      white-space: nowrap; /* 👈 确保文字不换行 */
+    }
+    
+    .password-input-group button:hover {
+      opacity: 0.8;
+    }
+
+    /* 手机端适配 */
+    @media (max-width: 480px) {
+        .password-input-group {
+            flex-direction: column; /* 手机端上下堆叠 */
+            gap: 12px;
+        }
+        .password-input-group button {
+            width: 100%;
+        }
+        .password-protect-container {
+            padding: 2rem 1.5rem; /* 手机端稍微增加点内边距 */
+        }
+    }
+  </style>
 </BaseLayout>

@@ -2,7 +2,7 @@
 import BaseLayout from '../layouts/BaseLayout.astro';
 import HeroImage from '../components/HeroImage.astro';
 import EntryListItem from '../components/EntryListItem.astro';
-import { getPublished, isReservedSlug } from '../lib/content';
+import { getPublished, isReservedSlug, getEssaySlug } from '../lib/content'; 
 import { getListExcerpt } from '../utils/excerpt';
 import { createWithBase } from '../utils/format';
 
@@ -25,15 +25,19 @@ const latest = visibleEssays.slice(0, 12);
 
   <div class="intro intro--serif">
     <span class="intro__lead">这是我（@Blueberryy_095）的个人博客。</span>
-    <span class="intro__more">更多文章请访问 <a href={withBase('/archive/')}>归档</a> 或 <a href={withBase('/essay/')}>随笔</a>。</span>
+    <span class="intro__more">更多文章请访问 <a href={withBase('/essay/')}>随笔</a>、<a href={withBase('/series/')}>连载</a> 或 <a href={withBase('/archive/')}>归档</a> 。</span>
   </div>
 
   <h2 class="section-title section-title--index">索引</h2>
 
   <div class="list">
     {latest.map((entry) => {
-      const slug = entry.data.slug ?? entry.id;
-      const href = withBase(`/archive/${slug}/`);
+      // 👈 终极 Bug 修复 1：强制使用 content.ts 里的标准函数提取 slug，防止 undefined
+      const slug = getEssaySlug(entry); 
+
+      // 👈 终极 Bug 修复 2：根据不同的 collection 动态跳转 `/essay/` 或 `/series/`
+      const href = withBase(`/${entry.collection}/${slug}/`);
+      
       const tag = entry.data.tags?.[0];
       return (
         <EntryListItem

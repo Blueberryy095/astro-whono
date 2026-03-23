@@ -34,6 +34,7 @@ const essay = defineCollection({
   schema: z.object({
     ...baseFields,
     cover: z.string().optional(),
+    password: z.string().optional(),
     badge: z.string().optional()
   })
 });
@@ -66,4 +67,15 @@ const memo = defineCollection({
   })
 });
 
-export const collections = { essay, bits, memo };
+const series = defineCollection({
+  // 注意这里的 base 路径对应你新建的文件夹
+  loader: glob({ pattern: '**/*.md', base: './src/content/series' }),
+  schema: z.object({
+    ...baseFields,         // 直接复用你上面定义好的基础字段(title, date等)
+    topic: z.string(),     // 新增一个 topic 字段，用来作为连载的“标签/主题”
+    password: z.string().optional(),
+    cover: z.string().optional() // 可选：如果你想给连载文章也加封面图的话
+  })
+});
+
+export const collections = { essay, bits, memo, series };

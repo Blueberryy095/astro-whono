@@ -44,7 +44,10 @@ export async function getPublished<K extends CollectionKey>(
 
 export type EssayEntry = CollectionEntry<'essay'>;
 
-export const getEssaySlug = (entry: EssayEntry) => entry.data.slug ?? entry.id;
+export type EssayEntry = CollectionEntry<'essay'>;
+
+// 1. 放宽类型限制：现在它不仅认识 essay，也认识 series 了
+export const getEssaySlug = (entry: CollectionEntry<'essay'> | CollectionEntry<'series'> | any) => entry.data.slug ?? entry.id;
 
 const orderByEssayDate = (a: EssayEntry, b: EssayEntry) => b.data.date.valueOf() - a.data.date.valueOf();
 
@@ -59,7 +62,29 @@ export async function getVisibleEssays() {
   return essays.filter((entry) => !isReservedSlug(getEssaySlug(entry)));
 }
 
+// 👇 见证奇迹的时刻：大熔炉归档函数 👇
 export async function getArchiveEssays() {
+  // 1. 获取合格的随笔
   const essays = await getSortedEssays();
-  return essays.filter((entry) => entry.data.archive !== false && !isReservedSlug(getEssaySlug(entry)));
+  const validEssays = essays.filter((entry) => entry.data.archive !== false && !isReservedSlug(getEssaySlug(entry)));
+
+  // 2. 获取合格的连载
+  const series = await getPublished('series');
+  const validSeries = series.filter((entry) => entry.data.archive !== false && !isReservedSlug(entry.data.slug ?? entry.id));
+
+  // 3. 巧妙转换：把 series 特有的 topic 塞进 tags 数组里，这样归档页就能直接渲染出标签了
+  const formattedSeries = validSeries.map(entry => ({
+    ...entry,
+    data: {
+      ...entry.data,
+      // 如果你原本在连载里写了 tags 就保留，没写就把 topic 当作 tag 放进去（Set 用于去重）
+      tags: Array.from(new Set([...(entry.data.tags || []), entry.data.topic]))
+    }
+  }));
+
+  // 4. 大熔炉合并！
+  const allItems = [...validEssays, ...formattedSeries];
+
+  // 5. 统一按时间全局倒序排列
+  return allItems.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 }

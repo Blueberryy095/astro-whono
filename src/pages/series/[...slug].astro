@@ -1,0 +1,46 @@
+---
+import { render } from 'astro:content';
+// 👇 关键：同样引入原生的函数
+import { getPublished, isReservedSlug, getEssaySlug } from '../../lib/content';
+import ArticleLayout from '../../layouts/ArticleLayout.astro';
+import { createWithBase } from '../../utils/format';
+
+export async function getStaticPaths() {
+  const base = import.meta.env.BASE_URL ?? '/';
+  const withBase = createWithBase(base);
+  
+  const seriesPosts = await getPublished('series', {
+    orderBy: (a, b) => b.data.date.valueOf() - a.data.date.valueOf()
+  });
+  
+  const validSeries = seriesPosts.filter((entry) => 
+    !isReservedSlug(getEssaySlug(entry)) && entry.data.archive !== false
+  );
+  
+  return validSeries.map((entry, index) => {
+    const prevEntry = index > 0 ? validSeries[index - 1] : null;
+    const nextEntry = index < validSeries.length - 1 ? validSeries[index + 1] : null;
+    
+    // 👇 绝杀：建网页时也用它！
+    const currentSlug = getEssaySlug(entry);
+    
+    return {
+      params: { slug: currentSlug }, 
+      props: {
+        entry,
+        prev: prevEntry
+          ? { href: withBase(`/series/${getEssaySlug(prevEntry)}/`), title: prevEntry.data.title }
+          : null,
+        next: nextEntry
+          ? { href: withBase(`/series/${getEssaySlug(nextEntry)}/`), title: nextEntry.data.title }
+          : null
+      }
+    };
+  });
+}
+
+const { entry, prev, next } = Astro.props;
+const { Content } = await render(entry);
+---
+
+<ArticleLayout entry={entry} Content={Content} prev={prev} next={next} />

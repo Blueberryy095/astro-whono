@@ -7,7 +7,7 @@ archive: true
 draft: false
 ---
 <figure class="figure">
-  <img src="/images/essay/2024/20240611.webp" alt="My flowers in Nottingham" />
+  <img src="/images/essay/2024/20240611.webp" alt="My flowers in Nottingham" style="width: 80%; height: auto;"/>
 </figure>
 从左到右12345，
 不过现在应该不是这么摆的。
