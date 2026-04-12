@@ -2,7 +2,7 @@
 title: "Is it love?"
 description: "三月随笔掉落中"
 date: 2026-03-20
-tags: ["追星","心"]
+tags: ["追星"]
 archive: true
 draft: false
 ---

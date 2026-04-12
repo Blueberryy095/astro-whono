@@ -8,6 +8,14 @@ draft: true
 archive: false
 ---
 
+```python
+npm run dev
+
+git add . 
+git commit -m "更新日志" 
+git push
+```
+
 这篇文章展示了本主题支持的所有 Markdown 排版效果。
 
 第一段……（用于列表预览）

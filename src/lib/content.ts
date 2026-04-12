@@ -62,29 +62,33 @@ export async function getVisibleEssays() {
   return essays.filter((entry) => !isReservedSlug(getEssaySlug(entry)));
 }
 
-// 👇 见证奇迹的时刻：大熔炉归档函数 👇
 export async function getArchiveEssays() {
+  // 🎛️ 你的专属开关：设为 false 归档里就没有连载，设为 true 就会混入连载
+  const ENABLE_SERIES_IN_ARCHIVE = false;
+
   // 1. 获取合格的随笔
   const essays = await getSortedEssays();
   const validEssays = essays.filter((entry) => entry.data.archive !== false && !isReservedSlug(getEssaySlug(entry)));
 
-  // 2. 获取合格的连载
+  // 🛑 核心拦截：如果开关是关闭的，直接返回纯随笔，后面的代码都不执行了！
+  if (!ENABLE_SERIES_IN_ARCHIVE) {
+    return validEssays;
+  }
+
+  // 🟢 如果开关是开启的，继续执行大熔炉合并魔法
   const series = await getPublished('series');
   const validSeries = series.filter((entry) => entry.data.archive !== false && !isReservedSlug(entry.data.slug ?? entry.id));
 
-  // 3. 巧妙转换：把 series 特有的 topic 塞进 tags 数组里，这样归档页就能直接渲染出标签了
   const formattedSeries = validSeries.map(entry => ({
     ...entry,
+    id: entry.id,
+    collection: entry.collection,
     data: {
       ...entry.data,
-      // 如果你原本在连载里写了 tags 就保留，没写就把 topic 当作 tag 放进去（Set 用于去重）
       tags: Array.from(new Set([...(entry.data.tags || []), entry.data.topic]))
     }
   }));
 
-  // 4. 大熔炉合并！
   const allItems = [...validEssays, ...formattedSeries];
-
-  // 5. 统一按时间全局倒序排列
   return allItems.sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
 }
